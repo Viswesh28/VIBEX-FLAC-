@@ -497,7 +497,7 @@ test("test3 Battery Saver persists, temporarily suspends crossfade, and preserve
   await expect(page.getByLabel("Crossfade", { exact: false })).toHaveValue("3");
   await expect(page.getByLabel("Streaming quality")).toHaveValue("320kbps");
   await expect(
-    page.getByText("2.0-test5 · Notification player fix"),
+    page.getByText("2.0 · Experimental Android build 26"),
   ).toBeVisible();
 });
 
@@ -1120,4 +1120,15 @@ test("player shows real artwork with a dark background and safe missing-art fall
   await art.locator('img').evaluate(img => img.dispatchEvent(new Event('error')));
   await expect(art.locator('svg')).toBeVisible();
   expect(await art.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(39, 39, 43)');
+});
+
+test("Settings about section displays current build and general service information", async ({page}) => {
+  await page.goto('/');
+  await page.getByRole('button',{name:'Settings',exact:true}).click();
+  const about=page.locator('.about-block');
+  await expect(about).toContainText('Experimental Android build 26');
+  await expect(about).toContainText('external services');
+  await expect(about).not.toContainText('JioSaavn');
+  await expect(about).not.toContainText('test5');
+  await expect(about).toContainText('VISWESHSARAVAN');
 });

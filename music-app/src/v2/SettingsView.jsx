@@ -574,15 +574,15 @@ export function SettingsView() {
       <div className="about-block">
         <div className="brand-mark">v</div>
         <h3>Vibex</h3>
-        <small>2.0-test5 · Notification player fix</small>
+        <small>2.0 · Experimental Android build 26</small>
         <p>
           Music for your every mood.
           <br />
-          Independent. Local-first. Powered by JioSaavn.
+          Your music, your way.
         </p>
         <small>
-          Native playback and offline features require Android. Add the Vibex
-          player widget from your home screen’s widget picker.
+          Music, artwork and lyrics may come from external services and depend on availability.
+          Add the Vibex player widget from your home screen’s widget picker.
         </small>
         <p className="creator-credit">
           Made with ❤️ by <strong>VISWESHSARAVAN</strong>

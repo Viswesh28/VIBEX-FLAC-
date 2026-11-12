@@ -19,4 +19,4 @@ local.properties
 *.key
 # Keep only the current test APK in the repository.
 releases/*.apk
-!releases/VIBEX-artwork-fix-v25.apk
+!releases/VIBEX-settings-update-v26.apk

@@ -82,3 +82,6 @@ See `docs/ECHO_PARITY_AUDIT.md` and `docs/ui-parity/` for scope, tests and brows
 
 ## Player artwork fix v25
 Player has an explicit dark canvas, a visible foreground cover, an eager artwork fetch for player covers, direct-URL retry after cached image failure, and a dark missing-art fallback; existing full-bleed backdrop remains dimmed. Node tests 69/69, Playwright 32/32 (including image loading, fallback and width checks), Android debug APK built and signed. Native artwork behavior and actual phone UI remain unverified: emulator/device unavailable. APK: releases/VIBEX-artwork-fix-v25.apk.
+
+## Settings about update v26
+Updated the outdated Settings footer build description and replaced named-provider attribution with a general external-services note; creator credit and functionality retained. APK `releases/VIBEX-settings-update-v26.apk`, versionCode 26. Unit 69/69 and browser 33/33 passed; Android debug build succeeded, signed with the same test key as v25. Native device testing remains outstanding.
