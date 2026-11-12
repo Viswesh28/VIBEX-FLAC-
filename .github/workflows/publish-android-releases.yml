@@ -37,3 +37,5 @@ jobs:
           else
             gh release create v26 /tmp/vibex-release/VIBEX-settings-update-v26.apk --verify-tag --title 'VIBEX v26 — Settings details update (Android test)' --notes-file docs/release-notes/v26.md --prerelease
           fi
+          # v26 remains an experimental test build, but is the latest available APK.
+          gh release edit v26 --prerelease=false --latest
