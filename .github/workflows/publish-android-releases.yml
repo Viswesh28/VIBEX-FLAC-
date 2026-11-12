@@ -1,0 +1,39 @@
+name: Publish Android test releases
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-android-releases.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish v25 and v26 with APK assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/vibex-release
+          git show v25:releases/VIBEX-artwork-fix-v25.apk > /tmp/vibex-release/VIBEX-artwork-fix-v25.apk
+          git show v26:releases/VIBEX-settings-update-v26.apk > /tmp/vibex-release/VIBEX-settings-update-v26.apk
+          echo '26aaebd51f79898f48edd0d82bace21982594da8623b6bb22e6d904af286fecd  /tmp/vibex-release/VIBEX-artwork-fix-v25.apk' | sha256sum -c
+          echo '415c5368c648565830af440f40f0ebac91c2a0f314cb94d1f4f84187662a4d9f  /tmp/vibex-release/VIBEX-settings-update-v26.apk' | sha256sum -c
+          if gh release view v25 >/dev/null 2>&1; then
+            gh release upload v25 /tmp/vibex-release/VIBEX-artwork-fix-v25.apk --clobber
+          else
+            gh release create v25 /tmp/vibex-release/VIBEX-artwork-fix-v25.apk --verify-tag --title 'VIBEX v25 — Player artwork fix (Android test)' --notes-file docs/release-notes/v25.md --prerelease
+          fi
+          if gh release view v26 >/dev/null 2>&1; then
+            gh release upload v26 /tmp/vibex-release/VIBEX-settings-update-v26.apk --clobber
+          else
+            gh release create v26 /tmp/vibex-release/VIBEX-settings-update-v26.apk --verify-tag --title 'VIBEX v26 — Settings details update (Android test)' --notes-file docs/release-notes/v26.md --prerelease
+          fi
