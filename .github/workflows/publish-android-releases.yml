@@ -39,3 +39,8 @@ jobs:
           fi
           # v26 remains an experimental test build, but is the latest available APK.
           gh release edit v26 --prerelease=false --latest
+          # Complete source/documentation bundle, supplied for phone downloads.
+          if [ -f VIBEX-complete-source-and-apks.zip ]; then
+            echo 'aba0afec945712fa4667b554894b42f86d28d73901d6921d540a16fa6454d750  VIBEX-complete-source-and-apks.zip' | sha256sum -c
+            gh release upload v26 VIBEX-complete-source-and-apks.zip --clobber
+          fi
