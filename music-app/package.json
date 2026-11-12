@@ -1,0 +1,38 @@
+{
+  "name": "vibex-music-app",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "VIBEX music player — React front-end and the Node gateway that serves it.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "node server.mjs",
+    "start": "npm run build && node server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "android:sync": "npm run build && cap sync android",
+    "android:build": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/filesystem": "^7.1.9",
+    "@hono/zod-openapi": "^0.19.10",
+    "hono": "^4.13.13",
+    "jiosaavn-api": "file:../jiosaavn-api",
+    "lucide-react": "^0.468.0",
+    "node-forge": "^1.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/cli": "^7.6.9",
+    "@playwright/test": "^1.58.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

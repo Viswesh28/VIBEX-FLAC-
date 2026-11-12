@@ -1,0 +1,4 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import {createLongPress} from '../src/v2/long-press.js';
+const event=(x=0,y=0)=>({button:0,pointerId:1,clientX:x,clientY:y});
+test('long press fires once and consumes one click',()=>{let cb, n=0;const g=createLongPress({onLongPress:()=>n++,clock:{setTimeout:f=>(cb=f,1),clearTimeout:()=>{cb=null;}}});g.down(event());cb();g.up(event());assert.equal(n,1);assert.equal(g.consumeClick(),true);assert.equal(g.consumeClick(),false)});
+test('movement and release cancel scheduled gesture',()=>{let cb, n=0;const g=createLongPress({onLongPress:()=>n++,clock:{setTimeout:f=>(cb=f,1),clearTimeout:()=>{cb=null;}}});g.down(event());g.move(event(20,0));assert.equal(cb,null);g.down(event());g.up(event());assert.equal(cb,null);assert.equal(n,0)});

@@ -1,0 +1,22 @@
+node_modules/
+.bun/
+dist/
+*.log
+.DS_Store
+*.zip
+
+# Generated build output, local settings and private signing material
+.gradle/
+.kotlin/
+build/
+.cache/
+local.properties
+.env
+.env.*
+*.keystore
+*.jks
+*.pem
+*.key
+# Keep only the current test APK in the repository.
+releases/*.apk
+!releases/VIBEX-artwork-fix-v25.apk

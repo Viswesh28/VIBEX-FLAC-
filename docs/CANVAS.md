@@ -1,0 +1,31 @@
+# Canvas foundation — experimental, not a complete provider integration
+
+## Status
+The current APK displays the original static artwork. **No animated provider is enabled**: all three named provider classes return unavailable. Do not describe this build as having working Apple Music animated artwork or Spotify Canvas. There are no production fixtures, copied GPL implementations, hardcoded tokens, or assumed authenticated endpoints.
+
+## Reference research
+- Echo Music source inspected at `31485b5`, GPL-3.0. Its dedicated `applecanvas` module uses Apple catalog search, a token provider, album lookup with an editorial-video extension and motion artwork; its separate player uses a Media3 video player. It also has other Canvas modules. The token and implementation have not been copied.
+- SimpMusic source inspected at `c11ee6a`, GPL-3.0. Its `SharedViewModel.getCanvas` orders Apple animated artwork before Spotify Canvas, checks that the result still belongs to the active track, and retains artwork when no result succeeds. Its Apple UI recognises HLS animated artwork; its Spotify UI uses video Canvas. This is reference material, not bundled code.
+- Apple Music's published API overview covers catalog artwork and music videos: https://developer.apple.com/documentation/applemusicapi.md . Echo's observed `editorialVideo` extension is not established here as a documented, authorized third-party animated-artwork contract. A valid Apple developer credential, documented access terms for the relevant motion assets, and rights to display/cache them need verification before enabling a provider. A MusicKit developer token alone is not evidence that the animated asset use is authorized.
+- Spotify's public Web API Canvas retrieval is not established. The Spotify developer community notes that the public Web API does not provide Canvas retrieval: https://community.spotify.com/t5/Spotify-for-Developers/Possible-to-retrieve-Canvas-video-thru-API/td-p/6432170 . Spotify login alone is not proof that a Canvas API or the relevant rights are available. Obtain a supported partner contract and applicable authorization; do not rely on an undocumented client endpoint or a third-party scraping service.
+- No additional provider's contract, authorization, rights, or media hosts have been supplied. The Additional provider is also unavailable.
+
+## Implemented foundation
+- `CanvasEngine.java`: independent provider interface and ordered Apple/Spotify/additional fallback, optional validated stored `canvasProviderOrder`, strict recording matching (exact normalized title and primary artist; reject conflicting ISRC, album and >3-second duration difference), cancellation/generation guards, timeout-bounded provider work, and a bounded in-memory positive-result cache limited by short explicit URL expiry. These names are adapter slots, not functioning Apple/Spotify implementations.
+- `CanvasRenderer.java`: independent Media3 ExoPlayer and TextureView; audio track selection disabled, volume zero, no audio focus; repeats source or an authorized 5–8-second clip. Only replaces the visible static artwork after a first frame; player errors release the overlay. This renderer has not been exercised with a real provider or device.
+- `CanvasDataSource.java`: HTTPS and exact provider host validation, no redirects, limited network timeouts, MP4 MIME/range checks. MP4 only; Apple's commonly observed HLS motion artwork is **not supported** by this data source. No downloaded Canvas media assets are cached; permission to cache must be established first.
+- `VibexCanvasPlugin.java` and the existing player artwork anchor: invisible-to-layout lifecycle bridge that checks active track, foreground, battery saver and unmetered network, cancels stale lookups, and releases when hidden/backgrounded. The static cover remains the immediate/default presentation. There is no new UI redesign or backend.
+- Only candidate metadata may be held in memory, and only until its declared expiry (at most 30 minutes). URLs are not supplied to the WebView. No durable media cache or production credential storage is implemented.
+
+## Verification
+- Web test suite: 67 passed.
+- Android JVM suite: 51 passed, 2 opt-in network tests skipped. Six Canvas unit tests use explicit test-only providers, covering exact match/version rejection, invalid/expired URL and format, priority/fallback, a simulated provider network exception, and stale results after rapid switching. They do not exercise provider credentials, Media3 decoder, real video, or audio playback.
+- Android `assembleDebug` succeeded. APK `releases/VIBEX-canvas-foundation-preview.apk`: SHA-256 `ce2d210a1925e743ff5385b5d4a06e3a66e21a734b03c2fa48a3a9f8805a1986`. Separate experimental application ID; public testing key, debuggable, not a production release.
+- `adb devices` showed no connected device. No real Apple/Spotify/both/neither media tests, decoder-failure test, real expired stream, video network interruption, device background/foreground, or simultaneous FLAC/audio-focus test were performed. Build success and synthetic provider tests do not establish those behaviors.
+
+## Remaining work before calling the feature complete
+1. Obtain and verify an authorized source contract, authentication method, exact response schema, track identity data, legal display and caching rights, and allowed asset hosts. Implement each provider independently from GPL code; do not use private endpoints or hardcoded secrets.
+2. Support and security-review authorized HLS if necessary; current renderer supports only MP4. Test redirects, range, size, MIME, expiry, concurrency and bounded cancellation with real sources.
+3. Exercise rendering, first-frame fallback, clipping and texture geometry on real Android devices; test codec errors, network loss, rapid switches, lifecycle changes, data saver, battery saver, FLAC audio/focus coexistence, and download/offline scenarios. Confirm no touch interception or layout regression.
+4. Review caching permissions and implement a bounded media cache only when permitted. Confirm battery/network behavior and release signing with a private key before distribution.
+5. Treat full music videos as a separate feature; do not substitute them for Canvas loops.
